@@ -131,6 +131,11 @@ tools/            # emoji extraction + print-doc generator
 - The map question uses a public-domain equirectangular world map (`public/world.jpg`).
 - The questions and couple details are **example content** — replace them to make it yours.
 
+## 📄 License
+
+[MIT](LICENSE) © 2026 Itai Benyamin. The quiz content and the couple's personal details are
+**example data** — the game engine is yours to reuse.
+
 ## 💛 Acknowledgements
 
 Built with [Claude Code](https://claude.com/claude-code). Made with love for Saar & Itai. 💍
