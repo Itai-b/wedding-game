@@ -1,65 +1,86 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LangSwitch from "@/components/LangSwitch";
+import Leaderboard from "@/components/Leaderboard";
+import Sticker from "@/components/Sticker";
+import { useI18n } from "@/lib/i18n";
+import { fetchLeaderboard, getPlayerId } from "@/lib/leaderboard";
 
 export default function Home() {
+  const { t } = useI18n();
+  const router = useRouter();
+  const [playerId, setPlayerId] = useState<string | null>(null);
+  const [wedding, setWedding] = useState<{ score: number; rank: number } | null>(null);
+
+  useEffect(() => {
+    const id = getPlayerId();
+    setPlayerId(id);
+    // Look up this device's wedding result (if any) from the frozen DB. Replays
+    // never write, so a returning guest's original entry stays findable.
+    fetchLeaderboard(1000).then((all) => {
+      const idx = all.findIndex((e) => e.id === id);
+      if (idx !== -1) setWedding({ score: all[idx].score, rank: idx + 1 });
+    });
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-dvh flex flex-col items-center px-5 py-8">
+      <div className="w-full max-w-md flex justify-end mb-2">
+        <LangSwitch />
+      </div>
+
+      <div className="w-full max-w-md flex-1 flex flex-col justify-center">
+        <header className="text-center mb-6 animate-pop">
+          <div className="flex items-center justify-center gap-1 mb-2">
+            <Sticker src="/emojis/saar-love.png" size={88} alt="Saar" priority />
+            <span className="text-3xl">💍</span>
+            <Sticker src="/emojis/itai-happy.png" size={88} alt="Itai" priority />
+          </div>
+          <h1 className="text-3xl font-extrabold text-periwinkle leading-tight">
+            {t("coupleNames")}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <p className="text-ink/60 mt-1">{t("weddingDate")}</p>
+        </header>
+
+        <div className="bg-white/85 backdrop-blur rounded-3xl shadow-lg p-6 text-center animate-pop">
+          <h2 className="text-xl font-extrabold text-coral mb-1">
+            {t("postThanksTitle")}
+          </h2>
+          <p className="text-ink/70 leading-snug">{t("postThanksBody")}</p>
+
+          {wedding && (
+            <p className="mt-4 inline-block bg-gold/15 text-ink/80 font-extrabold rounded-full px-4 py-2">
+              {t("yourWeddingResult", {
+                score: wedding.score.toLocaleString(),
+                rank: wedding.rank,
+              })}
+            </p>
+          )}
+
+          <button
+            onClick={() => router.push("/play")}
+            className="w-full mt-5 bg-coral text-white font-extrabold text-lg rounded-2xl py-4 shadow-md active:scale-[0.98] transition-transform"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            {t("playTheGame")}
+          </button>
+          <button
+            onClick={() => router.push("/answers")}
+            className="w-full mt-3 bg-periwinkle text-white font-bold rounded-2xl py-3.5 shadow-md active:scale-[0.98] transition-transform"
           >
-            Documentation
-          </a>
+            {t("viewAnswers")}
+          </button>
         </div>
-      </main>
-    </div>
+
+        {/* The frozen wedding podium — top 3 only, no full list, no player count */}
+        <div className="mt-6 bg-white/80 backdrop-blur rounded-3xl shadow-lg p-5 animate-pop">
+          <h2 className="text-center text-xl font-extrabold text-periwinkle mb-4">
+            {t("weddingPodiumTitle")}
+          </h2>
+          <Leaderboard podium limit={3} highlightId={playerId} />
+        </div>
+      </div>
+    </main>
   );
 }

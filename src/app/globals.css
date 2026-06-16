@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
+/* ---- Wedding floral palette (from the invitation) ---- */
+@theme {
+  --color-cream: #fbf7f4;
+  --color-cream-deep: #f3ebe4;
+  --color-periwinkle: #6e80d4;
+  --color-periwinkle-soft: #8d9ce0;
+  --color-coral: #e7849c;
+  --color-coral-soft: #f0a8b9;
+  --color-sage: #5b8a6f;
+  --color-sage-soft: #84b39a;
+  --color-lavender: #a98bc0;
+  --color-gold: #c9a24b;
+  --color-ink: #3a3550;
+
+  --font-sans: var(--font-rubik), system-ui, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbf7f4;
+  --foreground: #3a3550;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Larger base font: Tailwind sizes are rem-based, so this scales the whole
+   app up (~12%) — guests of all ages read the questions at arm's length. */
+html {
+  font-size: 18px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html,
+body {
+  background:
+    radial-gradient(1100px 700px at 12% -10%, #f6e6ec 0%, transparent 55%),
+    radial-gradient(1000px 650px at 100% 0%, #e7edf8 0%, transparent 50%),
+    radial-gradient(900px 700px at 50% 115%, #e8f1ea 0%, transparent 55%),
+    var(--background);
+  background-attachment: fixed;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth, mobile-friendly defaults */
+* {
+  box-sizing: border-box;
+}
+button {
+  touch-action: manipulation;
+}
+
+/* Subtle entrance animations */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-pop {
+  animation: pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-float {
+  animation: float-up 0.5s ease both;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.4s both;
+}
+
+/* The timer bar drains via this width transition */
+.timer-fill {
+  transition: width linear;
 }

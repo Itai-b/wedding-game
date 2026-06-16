@@ -30,11 +30,19 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — never commit real secrets, but DO ship the placeholder template
 .env*
+!.env.local.example
 
 # vercel
 .vercel
+
+# generated print materials (regenerate via tools/build-print-docs.mjs) — these
+# are the couple's personal posters/certificates, not source
+/src/documents/
+
+# local backups
+*.bak
 
 # typescript
 *.tsbuildinfo
