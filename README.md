@@ -1,5 +1,9 @@
 # 💍 Saar & Itai — Wedding Game
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Saar & Itai — Wedding Game" width="820">
+</p>
+
 A self-paced, **scan-to-play** wedding trivia game (Kahoot-style with speed scoring), built for a
 real wedding and battle-tested with ~150 guests. Bilingual **Hebrew (default, RTL) + English (LTR)**,
 a **live leaderboard with a winners' podium**, a **host/admin screen**, and printable **QR posters +
